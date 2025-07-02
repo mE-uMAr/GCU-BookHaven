@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f3f4f6;
+        margin: 0;
+        padding: 0;
+    }
+
+    .wishlist-wrapper {
+        max-width: 900px;
+        margin: 60px auto;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        padding: 32px;
+    }
+
+    .wishlist-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        color: #1f2937;
+        text-align: center;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 12px;
+    }
+
+    .wishlist-item {
+        display: flex;
+        gap: 20px;
+        padding: 20px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .wishlist-item:last-child {
+        border-bottom: none;
+    }
+
+    .wishlist-image {
+        width: 7rem;
+        height: 10rem;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .wishlist-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .wishlist-book-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+
+    .wishlist-book-author {
+        font-size: 15px;
+        color: #6b7280;
+        margin-bottom: 12px;
+    }
+
+    .wishlist-price {
+        font-size: 16px;
+        font-weight: 600;
+        color: #10b981;
+    }
+
+    .wishlist-remove {
+        align-self: flex-start;
+        padding: 6px 14px;
+        font-size: 13px;
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .wishlist-remove:hover {
+        background-color: #dc2626;
+    }
+
+    .empty-msg {
+        text-align: center;
+        font-size: 18px;
+        color: #6b7280;
+        padding: 40px 0;
+    }
+</style>
+{% endblock styles %}
+{% block page %}
+<div class="wishlist-wrapper">
+    <div class="wishlist-title">Your Wishlist</div>
+    <div id="wishlistItems"></div>
+</div>
+
+<script>
+    const username = "{{ request.user.username }}";
+
+    const allBooks = [
+        {% for book in books %}
+        {
+            slug: "{{ book.slug }}",
+            title: "{{ book.title|escapejs }}",
+            author: "{{ book.author|escapejs }}",
+            price: {{ book.price }},
+            image_url: "{% if book.cover_image %}{{ book.cover_image.url }}{% else %}{% static 'books/silent.png' %}{% endif %}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    function getWishlistItems() {
+        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        return wishlist.filter(item => item.username === username);
+    }
+
+    function removeFromWishlist(slug) {
+        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        wishlist = wishlist.filter(item => !(item.slug === slug && item.username === username));
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        renderWishlist();
+    }
+
+    function renderWishlist() {
+        const wishlistItems = getWishlistItems();
+        const container = document.getElementById("wishlistItems");
+        container.innerHTML = "";
+
+        if (wishlistItems.length === 0) {
+            container.innerHTML = `<div class="empty-msg">Your wishlist is empty.</div>`;
+            return;
+        }
+
+        wishlistItems.forEach(item => {
+            const book = allBooks.find(b => b.slug === item.slug);
+            if (!book) return;
+
+            const div = document.createElement("div");
+            div.className = "wishlist-item";
+
+            div.innerHTML = `
+                <img src="${book.image_url}" alt="${book.title}" class="wishlist-image">
+                <div class="wishlist-info">
+                    <div>
+                        <div class="wishlist-book-title">${book.title}</div>
+                        <div class="wishlist-book-author">by ${book.author}</div>
+                        <div class="wishlist-price">$${book.price.toFixed(2)}</div>
+                    </div>
+                    <button class="wishlist-remove" onclick="removeFromWishlist('${book.slug}')">Remove</button>
+                </div>
+            `;
+
+            container.appendChild(div);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", renderWishlist);
+</script>
+{% endblock page %}

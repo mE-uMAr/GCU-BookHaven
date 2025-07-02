@@ -1,0 +1,423 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static "base.css" %}">
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Top Navigation */
+        .top-navigation {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 20px 0;
+        }
+
+        .navigation-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: #6c757d;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .addbtn {
+            padding: 8px 16px;
+            border: none;
+            background-color: #FCA311;
+            color: white;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s;
+            animation: zoom 2s ease-in-out infinite;
+        }
+        @keyframes zoom {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .nav-tab.active {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .search-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .location-dropdown {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            color: #495057;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 35px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px 0;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .book-image-container {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .book-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .tag-sell {
+            background: #27ae60;
+        }
+
+        .tag-swap {
+            background: #3498db;
+        }
+
+        .tag-donate {
+            background: #f39c12;
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        .book-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .book-author {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+
+        .book-owner {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 15px;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .btn-view {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #e67e22;
+        }
+
+        .btn-message {
+            background: #ecf0f1;
+            color: #2c3e50;
+            border: 1px solid #bdc3c7;
+        }
+
+        .btn-message:hover {
+            background: #d5dbdb;
+        }
+
+        .load-more {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .btn-load-more {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-load-more:hover {
+            background: #34495e;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navigation-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-section {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .search-container {
+                flex: 1;
+                min-width: auto;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+
+            .nav-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+        }
+    </style>
+{% endblock styles %}
+{% block page %}
+    <div class="top-navigation">
+        <div class="container">
+            <div class="navigation-content">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" data-filter="all">All</button>
+                    <button class="nav-tab" data-filter="sell">Sell</button>
+                    <button class="nav-tab" data-filter="donate">Donate</button>
+                    <button class="nav-tab" data-filter="swap">Swap</button>
+                </div>
+                
+                <!--<div class="search-section">
+                    <select class="location-dropdown">
+                        <option>All Locations</option>
+                        <option>New York</option>
+                        <option>Los Angeles</option>
+                        <option>Chicago</option>
+                        <option>Houston</option>
+                    </select>-->
+                    
+                    <div class="search-container">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" class="search-input" placeholder="Search books..." id="searchInput">
+                    </div>
+                    <div class="nav-tabs">
+                        <button onclick="addPage()" class="addbtn" data-filter="all">List your Book</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="books-grid" id="booksGrid">
+                {% for book in books %}
+                {% if not book.requests.status == "accepted" and not book.requests.status == "rejected" %}
+                <div class="book-card" data-category="{{book.category}}">
+                    <div class="book-image-container">
+                        <img src="{{book.cover_image.url}}" alt="The Notebook" class="book-image">
+                        {% if book.category == "swap" %}
+                        <span class="category-tag tag-swap">Swap</span>
+                        {% elif book.category == "sell" %}
+                        <span class="category-tag tag-sell">Sell</span>
+                        {% elif book.category == "donate" %}
+                        <span class="category-tag tag-donate">Donate</span>
+                        {% endif %}
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">{{book.title}}</h3>
+                        <p class="book-author">by {{book.author}}</p>
+                        <p class="book-owner">Owner: {{book.uploadedBy.first_name}} {{book.uploadedBy.last_name}}</p>
+                        <div class="book-actions">
+                            <button onclick="window.location.href = '/exchangeoffer/{{book.slug}}'" class="btn btn-view">View</button>
+                            <!--<button class="btn btn-message">Message</button>-->
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function addPage() {
+            // Redirect to the add book page
+            window.location.href = "{% url 'add_book' %}";
+        }
+        // Minimal JavaScript for search and filter functionality only
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const filterTabs = document.querySelectorAll('.nav-tab');
+            const bookCards = document.querySelectorAll('.book-card');
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                bookCards.forEach(card => {
+                    const title = card.querySelector('.book-title').textContent.toLowerCase();
+                    const author = card.querySelector('.book-author').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+
+            // Filter functionality
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    bookCards.forEach(card => {
+                        const cardCategory = card.getAttribute('data-category');
+                        
+                        if (filterValue === 'all' || cardCategory === filterValue) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock page %}

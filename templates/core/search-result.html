@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static "styles.css" %}">
+{% endblock styles %}
+{% block page %}
+{% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        <div class="alert-icon">
+                            {% if message.tags == 'error' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            {% elif message.tags == 'success' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {% endif %}
+                        </div>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <section class="recently-viewed">
+        <div class="container">
+            <h2>Search Result for : {{query}}</h2>
+            <div class="books-grid">
+                {% if books %}
+                {% for rb in books %}
+                <div class="book-card">
+                    <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="book-actions">
+                        <button onclick="window.location.href = '/bookPage/{{rb.slug}}'" class="action-btn preview" title="Preview">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn cart" title="Add to Cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                        
+                    </div>
+                    <img onclick="window.location.href = '/bookPage/{{rb.slug}}'" src="{{rb.cover_image.url}}" alt="{{rb.title}}" class="book-cover">
+                    <h3 onclick="window.location.href = '/bookPage/{{rb.slug}}'" class="book-title">{{rb.title}}</h3>
+                    <p onclick="window.location.href = '/bookPage/{{rb.slug}}'" class="book-author">by {{rb.author}}</p>
+                    <div class="book-rating">
+                        <div class="stars" onclick="openReviewModal('{{rb.title}}')">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        <span class="rating-text">({{rb.rating}})</span>
+                    </div>
+                    <p onclick="window.location.href = '/bookPage/{{rb.slug}}'" class="book-description">{{rb.description | truncatechars:50 }}</p>
+                    <div class="book-footer">
+                        <span class="book-price">${{rb.price}}</span>
+                        <button class="add-to-cart" onclick="addToCart(this)">Add to Cart</button>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="no-results">
+                    <h3>No results found for "{{ query }}".</h3>
+                    <p>Try searching for something else.</p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock page %}

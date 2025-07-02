@@ -1,0 +1,660 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-family: 'Roboto', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #6c757d;
+        }
+
+        /* Main Content */
+        .cart-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* Cart Items */
+        .cart-items {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 24px 0;
+            border-bottom: 1px solid #f1f3f4;
+            position: relative;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .item-author {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .item-stock {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stock-in {
+            color: #27ae60;
+        }
+
+        .stock-low {
+            color: #f39c12;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0 20px;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .quantity-btn:hover {
+            border-color: #adb5bd;
+            background: #f8f9fa;
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .item-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 16px;
+            right: 0;
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            transition: all 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #e9ecef;
+            color: #e74c3c;
+        }
+
+        /* Order Summary */
+        .order-summary {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            height: fit-content;
+            /* position: sticky; */
+            top: 20px;
+        }
+
+        .summary-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        .summary-label {
+            color: #6c757d;
+        }
+
+        .summary-value {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .summary-total {
+            border-top: 1px solid #f1f3f4;
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .summary-total .summary-label,
+        .summary-total .summary-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 15px;
+            font-family: 'Roboto', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #495057;
+            border: 2px solid #e1e5e9;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+            border-color: #adb5bd;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .payment-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 12px;
+        }
+
+        .payment-icons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 28px;
+            background: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .payment-icon.visa {
+            background: #1a1f71;
+            color: white;
+        }
+
+        .payment-icon.mastercard {
+            background: #eb001b;
+            color: white;
+        }
+
+        .payment-icon.paypal {
+            background: #003087;
+            color: white;
+        }
+
+        .payment-icon.apple {
+            background: #000;
+            color: white;
+        }
+
+        /* Empty Cart */
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-cart i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #dee2e6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cart-content {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .cart-items,
+            .order-summary {
+                padding: 24px 20px;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .item-details {
+                width: 100%;
+            }
+
+            .quantity-controls {
+                margin: 0;
+            }
+
+            .item-price {
+                text-align: left;
+                min-width: auto;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cart-item {
+                padding: 20px 0;
+            }
+
+            .item-image {
+                width: 60px;
+                height: 90px;
+            }
+
+            .payment-icons {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+        }
+    </style>
+{% endblock styles %}    
+{% block page %}
+    
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Shopping Cart</h1>
+            <p class="page-subtitle" id="cartCount">3 items in your cart</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="cart-content">
+            <!-- Cart Items -->
+            <div class="cart-items" id="cartItems">
+                
+                {% comment %} <div class="cart-item" data-price="14.99">
+                    <img src="{% static "books/dune.png" %}" alt="The Silent Patient" class="item-image">
+                    <div class="item-details">
+                        <h3 class="item-title">The Silent Patient</h3>
+                        <p class="item-author">by Alex Michaelides</p>
+                        <p class="item-stock stock-in">
+                            <i class="fas fa-check-circle"></i> In Stock
+                        </p>
+                    </div>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn" onclick="updateQuantity(this, -1)">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" class="quantity-input" value="2" min="1" readonly>
+                        <button class="quantity-btn" onclick="updateQuantity(this, 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div class="item-price">$29.98</div>
+                    <button class="remove-btn" onclick="removeItem(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="show-cart"></div> {% endcomment %}
+
+                {% comment %} js based rendering of cart {% endcomment %}
+
+
+            </div>
+
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2 class="summary-title">Order Summary</h2>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Subtotal (<span id="itemCount">4</span> items)</span>
+                    <span class="summary-value" id="subtotal">PKR. 0.00</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Shipping</span>
+                    <span class="summary-value">PKR. 0.00</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span class="summary-label">Tax</span>
+                    <span class="summary-value" id="tax">PKR. 0.00</span>
+                </div>
+                
+                <div class="summary-row summary-total">
+                    <span class="summary-label">Total</span>
+                    <span class="summary-value" id="total">PKR. 0.00</span>
+                </div>
+
+                <button class="btn btn-primary">
+                    <a href="{% url 'checkout' %}" style="color: inherit; text-decoration: none;">
+                        <i class="fas fa-credit-card"></i>
+                    Proceed to Checkout
+                    </a>
+                </button>
+                
+                <button class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Continue Shopping
+                </button>
+
+                <div class="payment-methods">
+                    <p class="payment-text">We accept</p>
+                    <div class="payment-icons">
+                        <div class="payment-icon visa">VISA</div>
+                        <div class="payment-icon mastercard">MC</div>
+                        <div class="payment-icon paypal">PayPal</div>
+                        <div class="payment-icon apple">Pay</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const username = "{{ request.user.username }}";
+
+    // Inject all books data from backend
+    const allBooks = [
+        {% for book in books %}
+        {
+            slug: "{{ book.slug }}",
+            title: "{{ book.title|escapejs }}",
+            author: "{{ book.author|escapejs }}",
+            price: {{ book.price }},
+            image_url: "{% if book.cover_image %}{{ book.cover_image.url }}{% else %}{% static 'books/silent.png' %}{% endif %}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];  // all_books = list of books with slug, price, image_url, title, author
+
+    function getCartItems() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        return cart.filter(item => item.username === username);
+    }
+
+    function saveCart(cart) {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    function renderCart() {
+        const cartItems = getCartItems();
+        const container = document.getElementById("cartItems");
+        container.innerHTML = "";
+
+        if (cartItems.length === 0) {
+            updateCartCount();
+            updateOrderSummary();
+            return;
+        }
+
+        cartItems.forEach(item => {
+            const book = allBooks.find(b => b.slug === item.slug);
+            if (!book) return;
+
+            const totalPrice = (book.price * item.quantity).toFixed(2);
+            const div = document.createElement("div");
+            div.className = "cart-item";
+            div.setAttribute("data-slug", book.slug);
+            div.setAttribute("data-price", book.price);
+
+            div.innerHTML = `
+                <img src="${book.image_url}" alt="${book.title}" class="item-image">
+                <div class="item-details">
+                    <h3 class="item-title">${book.title}</h3>
+                    <p class="item-author">by ${book.author}</p>
+                    <p class="item-stock stock-in">
+                        <i class="fas fa-check-circle"></i> In Stock
+                    </p>
+                </div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="updateQuantity(this, -1)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" readonly>
+                    <button class="quantity-btn" onclick="updateQuantity(this, 1)">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="item-price">PKR. ${totalPrice}</div>
+                <button class="remove-btn" onclick="removeItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            container.appendChild(div);
+        });
+
+        updateCartCount();
+        updateOrderSummary();
+    }
+
+    function updateQuantity(button, change) {
+        const cartItem = button.closest('.cart-item');
+        const slug = cartItem.getAttribute("data-slug");
+        const quantityInput = cartItem.querySelector('.quantity-input');
+        const priceElement = cartItem.querySelector('.item-price');
+        const basePrice = parseFloat(cartItem.dataset.price);
+
+        let currentQuantity = parseInt(quantityInput.value);
+        let newQuantity = currentQuantity + change;
+        if (newQuantity < 1) return;
+
+        // Update localStorage
+        let cart = getCartItems();
+        const index = cart.findIndex(item => item.slug === slug && item.username === username);
+        if (index > -1) {
+            cart[index].quantity = newQuantity;
+        }
+        saveCart([...JSON.parse(localStorage.getItem("cart")).filter(i => i.username !== username), ...cart]);
+
+        quantityInput.value = newQuantity;
+        priceElement.textContent = 'PKR. ' + (basePrice * newQuantity).toFixed(2);
+
+        updateOrderSummary();
+        updateCartCount();
+    }
+
+    function removeItem(button) {
+        const cartItem = button.closest('.cart-item');
+        const slug = cartItem.getAttribute("data-slug");
+
+        let cart = getCartItems().filter(item => item.slug !== slug);
+        saveCart([...JSON.parse(localStorage.getItem("cart")).filter(i => i.username !== username), ...cart]);
+
+        cartItem.remove();
+        updateOrderSummary();
+        updateCartCount();
+    }
+
+    function updateOrderSummary() {
+        const cartItems = document.querySelectorAll('.cart-item');
+        let subtotal = 0;
+        let totalItems = 0;
+
+        cartItems.forEach(item => {
+            const quantity = parseInt(item.querySelector('.quantity-input').value);
+            const basePrice = parseFloat(item.dataset.price);
+            subtotal += basePrice * quantity;
+            totalItems += quantity;
+        });
+
+        const shipping = 0.00;
+        const taxRate = 0.08;
+        const tax = subtotal * taxRate;
+        const total = subtotal + tax + shipping;
+
+        document.getElementById('subtotal').textContent = 'PKR. ' + subtotal.toFixed(2);
+        document.getElementById('tax').textContent = 'PKR. ' + tax.toFixed(2);
+        document.getElementById('total').textContent = 'PKR. ' + total.toFixed(2);
+        document.getElementById('itemCount').textContent = totalItems;
+    }
+
+    function updateCartCount() {
+        const cartItems = getCartItems();
+        const cartCount = document.getElementById('cartCount');
+        if (cartItems.length === 0) {
+            document.getElementById('cartItems').innerHTML = `
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Your cart is empty</h3>
+                    <p>Add some books to get started!</p>
+                </div>
+            `;
+            cartCount.textContent = 'Your cart is empty';
+        } else {
+            const total = cartItems.reduce((sum, i) => sum + i.quantity, 0);
+            cartCount.textContent = `${total} item${total > 1 ? 's' : ''} in your cart`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderCart();
+    });
+</script>
+
+{% endblock page %}

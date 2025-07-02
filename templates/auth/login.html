@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCU BookHaven - Sign In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static "auth/login.css" %}">
+</head>
+<body>
+    <div class="container">
+        <div style="background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('{% static "auth/login.png" %}');" class="left-panel">
+            <div class="logo">
+                <div class="logo-books">
+                    <i style="color: #ff8c00; font-weight: bolder; font-size: 5rem;" ><img src="{% static "icon.svg" %}" alt="GCU BookHaven Logo" style="height: 15rem;" /></i>
+                </div>
+            </div>
+            <div class="logo-text">GCU BookHaven</div>
+            <div class="tagline">Your Digital Library Awaits</div>
+            <div class="description">
+                Discover thousands of books, connect with fellow readers, and embark on your next literary adventure.
+            </div>
+        </div>
+        
+        <div class="right-panel">
+            <div class="form-card">
+                <div class="form-header">
+                    <h1 class="form-title">Welcome Back</h1>
+                    <p class="form-subtitle">Sign in to your account</p>
+                </div>
+                 {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        <div class="alert-icon">
+                            {% if message.tags == 'error' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            {% elif message.tags == 'success' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {% endif %}
+                        </div>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉</span>
+                            <input name="email" type="email" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input name="password" type="password" class="form-input" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="checkbox-group">
+                            <input type="checkbox" class="checkbox" id="remember">
+                            <label for="remember" class="checkbox-label">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Sign In</button>
+                    
+                    <div class="divider">
+                        <span>Or continue with</span>
+                    </div>
+                    
+                    <button type="button" class="btn-google">
+                        <div class="google-icon"></div>
+                        <a style="text-decoration:none; color:black;" href="{% url 'social:begin' 'google-oauth2' %}">Sign in with Google</a>
+                    </button>
+                    
+                    <div class="signup-link">
+                        Don't have an account? <a href="/signup">Sign up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

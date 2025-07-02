@@ -1,0 +1,1010 @@
+{% extends "base.html" %}
+{% block styles %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: white;
+            min-height: 100vh;
+        }
+
+        .product-section {
+            display: flex;
+            gap: 60px;
+            margin-bottom: 40px;
+            align-items: flex-start;
+        }
+
+        .book-cover-container {
+            flex: 0 0 300px;
+            position: relative;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
+            border: 8px solid #d4a574;
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid #d4a574;
+            border-radius: 4px;
+        }
+
+        .cover-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cover-literature {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: #8b4513;
+            margin-bottom: 20px;
+        }
+
+        .cover-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #654321;
+            margin-bottom: 10px;
+            font-family: serif;
+        }
+
+        .cover-subtitle {
+            font-size: 24px;
+            font-weight: 600;
+            color: #654321;
+            font-family: serif;
+        }
+
+        .decorative-element {
+            width: 60px;
+            height: 2px;
+            background-color: #d4a574;
+            margin: 15px auto;
+            position: relative;
+        }
+
+        .decorative-element::before,
+        .decorative-element::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #d4a574;
+            border-radius: 50%;
+            top: -3px;
+        }
+
+        .decorative-element::before {
+            left: -10px;
+        }
+
+        .decorative-element::after {
+            right: -10px;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .product-author {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .stars {
+            color: #fbbf24;
+            font-size: 18px;
+        }
+
+        .rating-text {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .product-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .genre-link {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .genre-link:hover {
+            text-decoration: underline;
+        }
+
+        .price-section {
+            margin-bottom: 24px;
+        }
+
+        .current-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-right: 12px;
+        }
+
+        .original-price {
+            font-size: 18px;
+            color: #6b7280;
+            text-decoration: line-through;
+            margin-right: 12px;
+        }
+
+        .discount-badge {
+            background-color: #ef4444;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: #f59e0b;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background-color: #d97706;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #374151;
+            border: 2px solid #d1d5db;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+        }
+
+        .btn-wishlist {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            border: 2px solid #d1d5db;
+            padding: 12px 16px;
+        }
+
+        .btn-wishlist:hover {
+            background-color: #e5e7eb;
+        }
+
+        .tabs {
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        .tab-list {
+            display: flex;
+            gap: 32px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab {
+            padding: 12px 0;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tab.active {
+            color: #f59e0b;
+            border-bottom-color: #f59e0b;
+        }
+
+        .tab:hover {
+            color: #374151;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .description {
+            color: #4b5563;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .description p {
+            margin-bottom: 16px;
+        }
+
+        .reviews-container {
+            color: #4b5563;
+        }
+
+        .reviews-summary {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 32px;
+            padding: 24px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .rating-overview {
+            text-align: center;
+        }
+
+        .big-rating {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .rating-breakdown {
+            flex: 1;
+        }
+
+        .rating-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .rating-label {
+            font-size: 14px;
+            width: 20px;
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background-color: #fbbf24;
+            transition: width 0.3s ease;
+        }
+
+        .rating-count {
+            font-size: 14px;
+            color: #6b7280;
+            width: 40px;
+            text-align: right;
+        }
+
+        .review-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 24px 0;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .review-date {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .review-stars {
+            color: #fbbf24;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            line-height: 1.6;
+        }
+
+        .sample-preview {
+            color: #4b5563;
+            line-height: 1.8;
+        }
+
+        .sample-chapter {
+            margin-bottom: 32px;
+        }
+
+        .chapter-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .sample-text {
+            font-style: italic;
+            background-color: #f9fafb;
+            padding: 24px;
+            border-left: 4px solid #f59e0b;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .sample-note {
+            font-size: 14px;
+            color: #6b7280;
+            text-align: center;
+            padding: 16px;
+            background-color: #fef3c7;
+            border-radius: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 30px 16px;
+            }
+
+            .product-section {
+                gap: 40px;
+            }
+
+            .book-cover-container {
+                flex: 0 0 280px;
+            }
+
+            .book-cover {
+                height: 360px;
+            }
+
+            .product-title {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .product-section {
+                flex-direction: column;
+                gap: 30px;
+                align-items: center;
+            }
+
+            .book-cover-container {
+                flex: none;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .product-details {
+                width: 100%;
+            }
+
+            .product-title {
+                font-size: 24px;
+                text-align: center;
+            }
+
+            .product-author {
+                text-align: center;
+            }
+
+            .rating-section {
+                justify-content: center;
+            }
+
+            .product-info {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .price-section {
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn-wishlist {
+                align-self: center;
+                width: 100%;
+            }
+
+            .tab-list {
+                gap: 20px;
+                padding-bottom: 8px;
+            }
+
+            .reviews-summary {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+            }
+
+            .review-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px 12px;
+            }
+
+            .book-cover {
+                height: 320px;
+                padding: 30px 16px;
+            }
+
+            .cover-title {
+                font-size: 24px;
+            }
+
+            .cover-subtitle {
+                font-size: 18px;
+            }
+
+            .product-title {
+                font-size: 22px;
+            }
+
+            .current-price {
+                font-size: 24px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+
+            .tab-list {
+                gap: 16px;
+            }
+
+            .tab {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .book-cover-container {
+                max-width: 260px;
+            }
+
+            .book-cover {
+                height: 280px;
+            }
+
+            .cover-literature {
+                font-size: 14px;
+                letter-spacing: 2px;
+            }
+
+            .cover-title {
+                font-size: 24px;
+            }
+
+            .cover-subtitle {
+                font-size: 18px;
+            }
+        }
+    </style>{% endblock styles %}
+{% block page %}
+    {% if book.genre.name == "Audio" %}
+    <div class="container">
+        <div class="product-section">
+            <div class="book-cover-container">
+                <div class="stock-badge">In Stock</div>
+                <div class="book-cover">
+                    <div class="cover-text">
+                        <div class="cover-literature">{{book.genre.name}}</div>
+                        <div class="decorative-element"></div>
+                        <div class="cover-title">{{book.title}}</div>
+                        <div class="cover-subtitle">{{book.author}}</div>
+                        <div class="decorative-element"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-details">
+                <h1 class="product-title">{{book.title}}</h1>
+                <p class="product-author">{{book.author}}</p>
+
+                <div class="product-info">
+                    <div class="info-item">
+                        <span class="info-label">Genre:</span>
+                        <a href="#" class="info-value genre-link">{{book.genre.name}}</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Publisher:</span>
+                        <span class="info-value">{{book.publisher}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Language:</span>
+                        <span class="info-value">{{book.language}}</span>
+                    </div>
+                </div>
+
+                <div class="price-section">
+                    <span class="current-price">PKR. {{book.price}}</span>
+                    {% comment %} <span class="original-price">$18.99</span>
+                    <span class="discount-badge">32% OFF</span> {% endcomment %}
+                </div>
+
+                <div class="action-buttons">
+                    <form id="audForm" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="audslg" id="audslg">
+                    </form>
+                    {% if granted %}
+                    <a href="{{ book.audio_file.url }}" style="background-color:rgb(21, 97, 2); text-decoration:none; color:white;" class="btn btn-primary">
+                        Download Book
+                    </a>
+                    {% else %}  
+                    <button onclick="audSubmit('{{book.slug}}')" class="btn btn-primary">
+                        🛒 Buy Now
+                    </button> 
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+        <div class="tabs">
+            <div class="tab-list">
+                <div class="tab active" data-tab="description">Description</div>
+                <div class="tab" data-tab="previewAud">Audio Preview</div>
+            </div>
+        </div>
+
+        <div id="description" class="tab-content active">
+            <div class="description">
+                <p>{{book.description}}</p>
+            </div>
+        </div>
+
+        <div id="previewAud" class="tab-content">
+            <audio id="audioPlayer" controls>
+            <source src="{{ book.audio_file.url }}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <p>Note: Preview is only of 20 seconds buy book to Download or stream full version.</p>
+
+        <script>
+            const player = document.getElementById('audioPlayer');
+            const maxPreviewTime = 20;
+
+            let audslg = document.getElementById('audslg')
+
+            function audSubmit(slug){
+                audslg.value = slug;
+                document.getElementById('audForm').submit()
+            }
+
+            player.addEventListener('timeupdate', () => {
+                if (player.currentTime >= maxPreviewTime) {
+                    player.pause();
+                    player.currentTime = 0;
+                }
+            });
+        </script>
+        </div>
+    </div>
+    {% else %}
+    <div class="container">
+        <div class="product-section">
+            <div class="book-cover-container">
+                <div class="stock-badge">In Stock</div>
+                <div class="book-cover">
+                    <div class="cover-text">
+                        <div class="cover-literature">{{book.genre.name}}</div>
+                        <div class="decorative-element"></div>
+                        <div class="cover-title">{{book.title}}</div>
+                        <div class="cover-subtitle">{{book.author}}</div>
+                        <div class="decorative-element"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-details">
+                <h1 class="product-title">{{book.title}}</h1>
+                <p class="product-author">{{book.author}}</p>
+
+                <div class="rating-section">
+                    {% if book.rating == 5.0 %}
+                    <div class="stars">★★★★★</div>
+                    {% elif book.rating >= 4.0 %}
+                    <div class="stars">★★★★☆</div>
+                    {% elif book.rating >= 3.0 %}
+                    <div class="stars">★★★☆☆</div>
+                    {% elif book.rating >= 2.0 %}
+                    <div class="stars">★★☆☆☆</div>
+                    {% elif book.rating >= 0.0 %}
+                    <div class="stars">★☆☆☆☆</div>
+                    {% endif %}
+                    
+                    <span class="rating-text">({{book.rating}}/5)</span>
+                </div>
+
+                <div class="product-info">
+                    <div class="info-item">
+                        <span class="info-label">Genre:</span>
+                        <a href="#" class="info-value genre-link">{{book.genre.name}}</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Pages:</span>
+                        <span class="info-value">{{book.pages}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Publisher:</span>
+                        <span class="info-value">{{book.publisher}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Language:</span>
+                        <span class="info-value">{{book.language}}</span>
+                    </div>
+                </div>
+
+                <div class="price-section">
+                    <span class="current-price">PKR. {{book.price}}</span>
+                    {% comment %} <span class="original-price">$18.99</span>
+                    <span class="discount-badge">32% OFF</span> {% endcomment %}
+                </div>
+
+                <div class="action-buttons">
+                    <button onclick="buyNow('{{ book.slug }}')" class="btn btn-primary">
+                        🛒 Buy Now
+                    </button>
+                    <button onclick="cartItem('{{ book.slug }}', this)" class="btn btn-secondary">
+                        🛍️ Add to Cart
+                    </button>
+                    <button onclick="toggleWishlist('{{book.slug}}',this)" data-slug="{{book.slug}}" class="btn btn-wishlist">
+                        ♡ Wishlist
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="tabs">
+            <div class="tab-list">
+                <div class="tab active" data-tab="description">Description</div>
+                <div class="tab" data-tab="reviews">Reviews ({{ total_reviews }})</div>
+                <div class="tab" data-tab="sample">Cover image</div>
+            </div>
+        </div>
+
+        <div id="description" class="tab-content active">
+            <div class="description">
+                <p>{{book.description}}</p>
+            </div>
+        </div>
+
+        <div id="reviews" class="tab-content">
+            <div class="reviews-container">
+                <div class="reviews-summary">
+                    <div class="rating-overview">
+                        
+                        <div class="big-rating">{{book.rating}}</div>
+                        {% if book.rating == 5.0 %}
+                        <div class="stars">★★★★★</div>
+                        {% elif book.rating >= 4.0 %}
+                        <div class="stars">★★★★☆</div>
+                        {% elif book.rating >= 3.0 %}
+                        <div class="stars">★★★☆☆</div>
+                        {% elif book.rating >= 2.0 %}
+                        <div class="stars">★★☆☆☆</div>
+                        {% elif book.rating >= 0.0 %}
+                        <div class="stars">★☆☆☆☆</div>
+                        {% endif %}
+                    </div>
+                    <div class="rating-breakdown">
+                        <div class="rating-bar">
+                            <span class="rating-label">5★</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: {{ star_percent.5|default:0 }}%"></div>
+                            </div>
+                            <span class="rating-count">{{ star_counts.5|default:0 }}</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="rating-label">4★</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: {{ star_percent.4|default:0 }}%"></div>
+                            </div>
+                            <span class="rating-count">{{ star_counts.4|default:0 }}</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="rating-label">3★</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: {{ star_percent.3|default:0 }}%"></div>
+                            </div>
+                            <span class="rating-count">{{ star_counts.3|default:0 }}</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="rating-label">2★</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: {{ star_percent.2|default:0 }}%"></div>
+                            </div>
+                            <span class="rating-count">{{ star_counts.2|default:0 }}</span>
+                        </div>
+                        <div class="rating-bar">
+                            <span class="rating-label">1★</span>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: {{ star_percent.1|default:0 }}%"></div>
+                            </div>
+                            <span class="rating-count">{{ star_counts.1|default:0 }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% for review in reviews %}
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="reviewer-name">{{ review.review.order.user.first_name }} {{ review.review.order.user.last_name }}</span>
+                    </div>
+                    {% if review.stars == 5 %}
+                    <div class="review-stars">★★★★★</div>
+                    {% elif review.stars >= 4 %}
+                    <div class="review-stars">★★★★☆</div>
+                    {% elif review.stars >= 3 %}
+                    <div class="review-stars">★★★☆☆</div>
+                    {% elif review.stars >= 2 %}
+                    <div class="review-stars">★★☆☆☆</div>
+                    {% elif review.stars >= 1 %}
+                    <div class="review-stars">★☆☆☆☆</div>
+                    {% endif %}
+                    
+                    <div class="review-text">
+                        {{review.text}}
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <div id="sample" class="tab-content">
+            <div class="sample-preview">
+                <img src="{{book.cover_image.url}}" alt="{{book.title}} Cover" style="width: 100%; max-width: 300px; border-radius: 8px; margin-bottom: 20px;">
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        function addToCart(slug) {
+            const username = "{{ request.user.username }}";
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const index = cart.findIndex(item => item.slug === slug && item.username === username);
+
+            if (index !== -1) {
+                cart[index].quantity += 1;
+            } else {
+                cart.push({ slug, username, quantity: 1 });
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+        
+        // Add to cart functionality
+        function cartItem(slug, button) {
+            addToCart(slug);
+            alert("Book added to cart!");
+
+                button.innerHTML = '✓ Added to Cart';
+                button.style.backgroundColor = '#10b981';
+                button.style.color = 'white';
+                button.style.borderColor = '#10b981';
+
+                setTimeout(() => {
+                    button.innerHTML = '🛍️ Add to Cart';
+                    button.style.backgroundColor = 'white';
+                    button.style.color = '#374151';
+                    button.style.borderColor = '#d1d5db';
+                }, 2000);
+            }
+            function buyNow(slug) {
+                addToCart(slug);
+                window.location.href = "/cart"
+            }
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+
+                //wishlist
+                const username = "{{ request.user.username }}";
+                const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+                // Set filled hearts for items in wishlist
+                document.querySelectorAll(".btn-wishlist").forEach(button => {
+                    const slug = button.getAttribute("data-slug");
+
+                    const isInWishlist = wishlist.some(item => item.slug === slug && item.username === username);
+                    if (isInWishlist) {
+                        button.classList.add('active');
+                        button.innerHTML = '♥ Wishlisted';
+                        button.style.backgroundColor = '#fef3c7';
+                        button.style.color = '#ff0051';
+                    } else {
+                        button.classList.remove("active");
+                    }
+                });
+            });
+        });
+
+    // Wishlist functionality
+    function addToWishlist(slug) {
+        const username = "{{ request.user.username }}";
+        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        const exists = wishlist.some(item => item.slug === slug && item.username === username);
+        if (exists) return;
+        wishlist.push({ slug, username });
+        //alert(`Book ${slug} added to wishlist!`);
+        //console.log(JSON.parse(localStorage.getItem("wishlist")))
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    }
+
+    function deleteFromWishlist(slug) {
+        const username = "{{ request.user.username }}";
+        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        wishlist = wishlist.filter(item => !(item.slug === slug && item.username === username));
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        //alert("Book removed from wishlist!");
+        //console.log(JSON.parse(localStorage.getItem("wishlist")))
+    }
+
+    function toggleWishlist(slug, button) {
+        const isWishlisted = button.classList.contains('active');
+        if (isWishlisted) {
+            button.classList.remove('active');
+            button.innerHTML = '♡ Wishlist';
+            button.style.backgroundColor = '#f3f4f6';
+            button.style.color = '#6b7280';
+            deleteFromWishlist(slug);
+        } else {
+            button.classList.add('active');
+            button.innerHTML = '♥ Wishlisted';
+            button.style.backgroundColor = '#fef3c7';
+            button.style.color = '#ff0051';
+            addToWishlist(slug);
+        }
+    }
+
+    </script>
+{% endblock page %}

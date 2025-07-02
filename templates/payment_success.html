@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block page %}
+<div class="container" style="padding: 50px 0; text-align: center;">
+    <h1 style="color: #27ae60; font-size: 32px;">🎉 Payment Successful!</h1>
+    <p style="font-size: 18px;">{{ string }}</p>
+    
+    <div style="margin: 30px auto; max-width: 400px; text-align: left;">
+        <h3 style="color: #2c3e50;">Order Summary</h3>
+        {% if order_id %}
+        <p><strong>Order ID:</strong> {{ order_id }}</p>
+        {% endif %}
+        
+        <p><strong>Amount Paid:</strong> Rs {{ price }}</p>
+
+        {% if book %}
+        <p><strong>Books:</strong>{{book.title}}</p>
+        {% endif %}
+    </div>
+
+    <a href="{{link}}" class="btn btn-primary" style="padding: 12px 24px; background-color: #f39c12; color: white; border-radius: 6px; text-decoration: none;">Proceed</a>
+</div>
+{% endblock %}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCU BookHaven - Your Digital Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static "base.css" %}">
+    {% block styles %}{% endblock styles %}
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <i><img  src="{% static "icon.svg" %}" alt="GCU BookHaven Logo" style="margin-right:7px; background-color:white; border-radius:50%;height: 3rem; width: 3rem;border:2px solid #ff8c00"/></i>
+            <a href="/" class="logo">GCU BookHaven</a>
+            
+            <div class="search-container">
+                <form method="GET" action="{% url 'search_books' %}">
+                <input style="width: 100%;" type="text" class="search-input" name="query" placeholder="Search books, authors...">
+                <button type = "submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                </form>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="{% url "browse_books" %}" class="nav-link">Browse</a>
+                <a href="/exchange" class="nav-link">Exchange</a>
+                <a href="/orders" class="nav-link">Orders</a>
+                <a href="/discount" class="nav-link">Discounts</a>
+                <a href="/v2/stores/" class="nav-link">Map</a>
+                <a href="/profile" class="nav-link">Profile</a>
+                <div class="cart-container">
+                    <button class="cart-icon" onclick="window.location.href='/cart'">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-notify" class="cart-badge"></span>
+                    </button>
+                    <button style="background-color:rgb(251, 166, 166); color:red;" class="cart-icon" onclick="window.location.href='/wishlist'">
+                        <i class="fas fa-heart"></i>
+                        <span id="wishlist-notify" class="cart-badge"></span>
+                    </button>
+                </div>
+                {% if not user.is_authenticated %}
+                <a href="/login" class="login-btn">Login <i style="color:green;" class="fa-solid fa-right-to-bracket"></i></a>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <p class="login-btn">Well Come, {{request.user.first_name}} {{request.user.last_name}}!</p>
+                {% endif %}
+            </nav>
+        </div>
+    <nav class="bottom-navbar">
+    <a href="/browse" class="nav-item">
+        <i class="fas fa-search"></i>
+        <span>Browse</span>
+    </a>
+    <a href="/cart" class="nav-item">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>Cart</span>
+    </a>
+    <a href="/" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </a>
+    <a href="/wishlist" class="nav-item">
+        <i class="fas fa-heart"></i>
+        <span>Wishlist</span>
+    </a>
+    <a href="/profile" class="nav-item">
+        {% if user.is_authenticated %}
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+        {% else %}
+        <i onclick="loginPage()" style="color:red;" class="fa-solid fa-right-to-bracket"></i>
+        <span onclick="loginPage()" style="color:red;">Login</span>
+        {% endif %}
+    </a>
+</nav>
+</header>
+    <script>
+        function loginPage(){
+            window.location.href = "/login";
+        }
+    document.addEventListener("DOMContentLoaded", function () {
+        const navItems = document.querySelectorAll(".bottom-navbar .nav-item");
+        const path = window.location.pathname;
+        // console.log("Current path:", path);
+
+        navItems.forEach(item => {
+            const href = item.getAttribute("href") || item.querySelector("a")?.getAttribute("href");
+            // console.log("Checking href:", href);
+            // Check if href matches current path
+            if (`${href}/` === path || href === path) {
+                item.classList.add("active");
+            }
+        });
+        const count = (JSON.parse(localStorage.getItem("cart")) || []).filter(i => i.username === "{{ request.user.username }}").reduce((sum, i) => sum + i.quantity, 0);
+        document.getElementById("cart-notify").textContent = count;
+
+        const wish = (JSON.parse(localStorage.getItem("wishlist")) || []).filter(i => i.username === "{{ request.user.username }}").length;
+        document.getElementById("wishlist-notify").textContent = wish;
+
+
+        });
+</script>
+
+    {% block page %}{% endblock page %}
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About GCU BookHaven</h3>
+                <ul>
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Mission</a></li>
+                    <li><a href="#">Team</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Services</h3>
+                <ul>
+                    <li><a href="/browse">Browse Books</a></li>
+                    <li><a href="/exchange">Book Exchange</a></li>
+                    <li><a href="#">Community</a></li>
+                    <li><a href="#">Reviews</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Disclaimer</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 - GCU BookHaven. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

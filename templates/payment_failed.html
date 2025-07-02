@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block page %}
+<div class="container" style="padding: 90px 0; text-align: center;">
+    <h1 style="color: #e74c3c; font-size: 32px;">❌ Payment Failed</h1>
+    <p style="font-size: 18px;">Unfortunately, your payment could not be completed.</p>
+    <p>If any amount was deducted, it will be refunded automatically by JazzCash.</p>
+</br>
+    <a href="{% url 'checkout' %}" class="btn btn-secondary" style="padding: 12px 24px; background-color: #bdc3c7; color: white; border-radius: 6px; text-decoration: none; margin-top: 160px;">Try Again</a>
+</div>
+{% endblock %}

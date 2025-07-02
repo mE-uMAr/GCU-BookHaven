@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+        }
+        .jazzcash-button{
+            background-color: rgb(245, 148, 1);
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+            border: none;
+            font-family: sans-serif;
+            text-decoration: none;
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>JazzCash Payment</h1>
+    <h1>Order Price: {{product_price}}</h1>
+    <form method="post" action="https://sandbox.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform/">
+        {% for key,value in post_data.items %} 
+
+            <input type="hidden", name="{{key}}" value="{{value}}">
+
+        {% endfor %}
+        <button type="submit" class="jazzcash-button"> Proceed to payment ...</button>
+
+    </form>
+    <script>
+        function submitForm(){
+            document.forms[0].submit()
+        }
+
+    </script>
+</body>
+</html>

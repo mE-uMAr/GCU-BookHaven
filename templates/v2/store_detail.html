@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+<title>{{ store.name }}</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .store-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .store-header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            border-left: 6px solid #f39c12;
+            border-right: 6px solid #f39c12;
+        }
+
+        .store-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+
+        .store-info p {
+            font-size: 15px;
+            color: #555;
+            margin: 6px 0;
+        }
+
+        .book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border-left: 4px solid #2ecc71;
+            transition: transform 0.2s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .book-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #34495e;
+        }
+
+        .book-author {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .book-price {
+            font-size: 14px;
+            margin-top: 8px;
+            color: #27ae60;
+            font-weight: 500;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            background-color: #f39c12;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color:rgb(177, 110, 2);
+        }
+    </style>
+    {% endblock styles %}
+{% block page %}
+<div class="store-container">
+    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center;" class="store-header">
+        <h1>{{ store.name }}</h1>
+        <div class="store-info">
+            <p><strong>Address:</strong> {{ store.address }}</p>
+            <p><strong>Description:</strong> {{ store.description }}</p>
+            <p><strong>Location:</strong> {{ store.latitude }}, {{ store.longitude }}</p>
+        </div>
+    </div>
+
+    <div class="book-list">
+        {% for book in books %}
+        <div style="display:flex; justify-content: space-between" class="book-card">
+            <div>
+                <div class="book-title">{{ book.title }}</div>
+                <div class="book-author">by {{ book.author }}</div>
+                <div class="book-price">Price: PKR {{ book.price }}</div>
+            </div>
+            {% if not book.available %}
+                <div class="book-price" style="color:red;">Out of stock</div>
+            {% else %}
+                <div class="book-price" style="color:green;">In Stock</div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>No books available in this store.</p>
+        {% endfor %}
+    </div>
+
+    <a href="/v2/stores/" class="back-link">← Back to Map</a>
+</div>
+{% endblock page %}
+

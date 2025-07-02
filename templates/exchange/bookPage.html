@@ -1,0 +1,848 @@
+{% extends "base.html" %}
+{% block styles %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: white;
+            min-height: 100vh;
+        }
+
+        .product-section {
+            display: flex;
+            gap: 60px;
+            margin-bottom: 40px;
+            align-items: flex-start;
+        }
+
+        .book-cover-container {
+            flex: 0 0 300px;
+            position: relative;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #f4e4bc 0%, #f0d49c 100%);
+            border: 8px solid #d4a574;
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 2px solid #d4a574;
+            border-radius: 4px;
+        }
+
+        .cover-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cover-literature {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: #8b4513;
+            margin-bottom: 20px;
+        }
+
+        .cover-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #654321;
+            margin-bottom: 10px;
+            font-family: serif;
+        }
+
+        .cover-subtitle {
+            font-size: 24px;
+            font-weight: 600;
+            color: #654321;
+            font-family: serif;
+        }
+
+        .decorative-element {
+            width: 60px;
+            height: 2px;
+            background-color: #d4a574;
+            margin: 15px auto;
+            position: relative;
+        }
+
+        .decorative-element::before,
+        .decorative-element::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #d4a574;
+            border-radius: 50%;
+            top: -3px;
+        }
+
+        .decorative-element::before {
+            left: -10px;
+        }
+
+        .decorative-element::after {
+            right: -10px;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .product-author {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .stars {
+            color: #fbbf24;
+            font-size: 18px;
+        }
+
+        .rating-text {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .product-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .genre-link {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .genre-link:hover {
+            text-decoration: underline;
+        }
+
+        .price-section {
+            margin-bottom: 24px;
+        }
+
+        .current-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-right: 12px;
+        }
+
+        .original-price {
+            font-size: 18px;
+            color: #6b7280;
+            text-decoration: line-through;
+            margin-right: 12px;
+        }
+
+        .discount-badge {
+            background-color: #ef4444;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: #f59e0b;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background-color: #d97706;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #374151;
+            border: 2px solid #d1d5db;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f9fafb;
+        }
+
+        .btn-wishlist {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            border: 2px solid #d1d5db;
+            padding: 12px 16px;
+        }
+
+        .btn-wishlist:hover {
+            background-color: #e5e7eb;
+        }
+
+        .tabs {
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        .tab-list {
+            display: flex;
+            gap: 32px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab {
+            padding: 12px 0;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tab.active {
+            color: #f59e0b;
+            border-bottom-color: #f59e0b;
+        }
+
+        .tab:hover {
+            color: #374151;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .description {
+            color: #4b5563;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .description p {
+            margin-bottom: 16px;
+        }
+
+        .reviews-container {
+            color: #4b5563;
+        }
+
+        .reviews-summary {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 32px;
+            padding: 24px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .rating-overview {
+            text-align: center;
+        }
+
+        .big-rating {
+            font-size: 48px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .rating-breakdown {
+            flex: 1;
+        }
+
+        .rating-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .rating-label {
+            font-size: 14px;
+            width: 20px;
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background-color: #fbbf24;
+            transition: width 0.3s ease;
+        }
+
+        .rating-count {
+            font-size: 14px;
+            color: #6b7280;
+            width: 40px;
+            text-align: right;
+        }
+
+        .review-item {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 24px 0;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .review-date {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .review-stars {
+            color: #fbbf24;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            line-height: 1.6;
+        }
+
+        .sample-preview {
+            color: #4b5563;
+            line-height: 1.8;
+        }
+
+        .sample-chapter {
+            margin-bottom: 32px;
+        }
+
+        .chapter-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .sample-text {
+            font-style: italic;
+            background-color: #f9fafb;
+            padding: 24px;
+            border-left: 4px solid #f59e0b;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .sample-note {
+            font-size: 14px;
+            color: #6b7280;
+            text-align: center;
+            padding: 16px;
+            background-color: #fef3c7;
+            border-radius: 4px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 30px 16px;
+            }
+
+            .product-section {
+                gap: 40px;
+            }
+
+            .book-cover-container {
+                flex: 0 0 280px;
+            }
+
+            .book-cover {
+                height: 360px;
+            }
+
+            .product-title {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .product-section {
+                flex-direction: column;
+                gap: 30px;
+                align-items: center;
+            }
+
+            .book-cover-container {
+                flex: none;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .product-details {
+                width: 100%;
+            }
+
+            .product-title {
+                font-size: 24px;
+                text-align: center;
+            }
+
+            .product-author {
+                text-align: center;
+            }
+
+            .rating-section {
+                justify-content: center;
+            }
+
+            .product-info {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .price-section {
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn-wishlist {
+                align-self: center;
+                width: 100%;
+            }
+
+            .tab-list {
+                gap: 20px;
+                padding-bottom: 8px;
+            }
+
+            .reviews-summary {
+                flex-direction: column;
+                gap: 24px;
+                text-align: center;
+            }
+
+            .review-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px 12px;
+            }
+
+            .book-cover {
+                height: 320px;
+                padding: 30px 16px;
+            }
+
+            .cover-title {
+                font-size: 24px;
+            }
+
+            .cover-subtitle {
+                font-size: 18px;
+            }
+
+            .product-title {
+                font-size: 22px;
+            }
+
+            .current-price {
+                font-size: 24px;
+            }
+
+            .btn {
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+
+            .tab-list {
+                gap: 16px;
+            }
+
+            .tab {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .book-cover-container {
+                max-width: 260px;
+            }
+
+            .book-cover {
+                height: 280px;
+            }
+
+            .cover-literature {
+                font-size: 14px;
+                letter-spacing: 2px;
+            }
+
+            .cover-title {
+                font-size: 24px;
+            }
+
+            .cover-subtitle {
+                font-size: 18px;
+            }
+        }
+        /* Alert Messages */
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+.alert-error {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.alert-icon {
+  flex-shrink: 0;
+}
+
+.alert-svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+    </style>{% endblock styles %}
+{% block page %}
+{% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        <div class="alert-icon">
+                            {% if message.tags == 'error' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            {% elif message.tags == 'success' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {% endif %}
+                        </div>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+    <div class="container">
+        <div class="product-section">
+            <div class="book-cover-container">
+                <div style="height:auto; padding: 8px 15px; display:flex; justify-content:center;align-items:center;" class="book-cover">
+                    <div class="cover-text">
+                         <img src="{{book.cover_image.url}}" alt="{{book.title}}" style="width: 100%; max-width: 300px; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-details">
+                <h1 class="product-title">{{book.title}}</h1>
+                <p class="product-author">{{book.author}}</p>
+
+                <div class="rating-section">
+                    
+                    <span class="rating-text">Owner: {{book.uploadedBy.first_name}} {{book.uploadedBy.last_name}}</span>
+                </div>
+
+                <div class="product-info">
+                    <div class="info-item">
+                        <span class="info-label">Condition</span>
+                        <span class="info-value">{{book.condition}}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Location:</span>
+                        <span class="info-value">{{book.location}}</span>
+                    </div>
+                </div>
+                {% if book.price != 0 %}
+                <div class="price-section">
+                    <span class="current-price">PKR. {{book.price}}</span>
+                </div>
+                {% endif %}
+                <div class="action-buttons">
+                    <button onclick="submitRequest('{{book.slug}}')" class="btn btn-primary">
+                        Message Owner
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="tabs">
+            <div class="tab-list">
+                <div class="tab active" data-tab="description">Description</div>
+                <div class="tab" data-tab="message">Details</div>
+            </div>
+        </div>
+
+        <div id="description" class="tab-content active">
+            <div class="description">
+                <p>{{book.description}}</p>
+            </div>
+        </div>
+        <div id="message" class="tab-content">
+            <div class="message">
+                    <p>Owner: {{book.uploadedBy}}</p>
+                    <p>Title: {{book.title}}</p>
+                    <p>Author: {{book.author}}</p>
+                    <p>Price: {{book.price}}</p>
+                    <p>Location: {{book.location}}</p>
+                    <p>Condition: {{book.condition}}</p>
+                    <p>Category: {{book.category}}</p>
+                    <p>Upload Time: {{book.created_at}}</p>
+            </div>
+        </div>
+        <form method="post" id="requestForm">
+            {% csrf_token %}
+            <input type="hidden" name="message" id="sndMsg">
+            <input type="hidden" name="slug" id="sndSlug">
+            <input type="hidden" name="user" id="sndUsr">
+        </form>
+
+        <!-- Hidden Form -->
+<div id="popupForm" style="
+    display:none;
+    position:fixed;
+    top:0; 
+    left:0;
+    width:100vw; 
+    height:100vh;
+    background:rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+">
+    <div style="
+        background:white;
+        padding:20px 30px;
+        border-radius:8px;
+        box-shadow:0 5px 15px rgba(0,0,0,0.2);
+        text-align:center;
+        position:relative;
+    ">
+        <span onclick="hideForm()" style="
+            position:absolute;
+            top:8px; right:12px;
+            cursor:pointer;
+            font-size:20px;
+        ">&times;</span>
+        <h2>Message Owner</h2>
+        {% if book.price != 0 %}
+        <p>Note: Book has a price PKR. {{book.price}}, </p>
+            <p>you have to pay on the time of pickup to the owner if your request accepted!</p>
+        {% endif %}
+        {% if book.category == "swap" %}
+        <h4>Enter a Book title to swap with</h4>
+        <input type="text" id="titleInp" placeholder="Type title here..." style="
+            padding:10px;
+            width:100%;
+            border:1px solid #ccc;
+            border-radius:5px;
+            margin-top:10px;
+        ">
+        <h4>Enter Book Author</h4>
+        <input type="text" id="AuthorInp" placeholder="Type Author here..." style="
+            padding:10px;
+            width:100%;
+            border:1px solid #ccc;
+            border-radius:5px;
+            margin-top:10px;
+        ">
+        {% endif %}
+        <h4>Enter Message</h4>
+        <input type="text" id="inpMsg" placeholder="Type Message here..." style="
+            padding:10px;
+            width:100%;
+            border:1px solid #ccc;
+            border-radius:5px;
+            margin-top:10px;
+        ">
+        <button style="cursor:pointer; margin: 20px; padding:8px 15px; background-color:rgb(25, 132, 255); border:none; border-radius:30px; color:white;" id="submitMsg" onclick="submitMsg('{{book.slug}}')">Submit Request</button>
+    </div>
+</div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        });
+        function submitRequest(slug){
+            document.getElementById('popupForm').style.display = 'flex';
+        }
+        function hideForm() {
+            document.getElementById('popupForm').style.display = 'none';
+        }
+        function submitMsg(slug){
+            let msg = document.getElementById('inpMsg').value;
+            let final = "";
+            if('{{book.category}}' == "swap"){
+                let title = document.getElementById('titleInp').value;
+                let author = document.getElementById('AuthorInp').value;
+                final = `{{request.user.first_name}} {{request.user.last_name}} - want to swap: ${title} by ${author} with your book. Message: ${msg}`;
+            }
+            else if('{{book.category}}' == "sell"){
+                final = `User: {{request.user.first_name}} {{request.user.last_name}} want to buy your book. Message: ${msg}`;
+            }
+            else{
+                final = msg;
+            }
+            document.getElementById('sndMsg').value = final;
+            document.getElementById('sndSlug').value = slug;
+            document.getElementById('sndUsr').value = '{{request.user}}';
+            document.getElementById('requestForm').submit();
+            hideForm();
+        }
+    </script>
+{% endblock page %}

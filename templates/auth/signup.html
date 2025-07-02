@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCU BookHaven - Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Roboto:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static "auth/signup.css" %}">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="form-card">
+                <div class="form-header">
+                    <h1 class="form-title">Join GCU BookHaven</h1>
+                    <p class="form-subtitle">Create your account to get started</p>
+                </div>
+                {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        <div class="alert-icon">
+                            {% if message.tags == 'error' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            {% elif message.tags == 'success' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {% endif %}
+                        </div>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input name="fName" type="text" class="form-input" placeholder="Enter first name" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">👤</span>
+                                <input name="lName" type="text" class="form-input" placeholder="Enter last name" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉</span>
+                            <input name="email" type="email" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                    </div>                    
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input name="pass1" type="password" class="form-input" placeholder="Create password" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">🔒</span>
+                                <input name="pass2" type="password" class="form-input" placeholder="Confirm password" required>
+                            </div>
+                        </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="checkbox" id="terms" required>
+                        <label for="terms" class="checkbox-label">
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="checkbox" id="newsletter">
+                        <label for="newsletter" class="checkbox-label">
+                            I would like to receive newsletters and promotional emails
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">Create Account</button>
+                    
+                    <div class="divider">
+                        <span>Or sign up with</span>
+                    </div>
+                    
+                    <button type="button" class="btn-google">
+                        <div class="google-icon"></div>
+                        <a style="text-decoration:none; color:black;" href="{% url 'social:begin' 'google-oauth2' %}">Sign up with Google</a>
+                    </button>
+                    
+                    <div class="signin-link">
+                        Already have an account? <a href="/login">Sign in</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('{% static "auth/signup.png" %}');" class="right-panel">
+            <div class="logo">
+                <div class="logo-books">
+                    <i style="color: #ff8c00; font-weight: bolder; font-size: 5rem;" ><img src="{% static "icon.svg" %}" alt="GCU BookHaven Logo" style="height: 15rem;" /></i>
+                </div>
+            </div>
+            <div class="logo-text">GCU BookHaven</div>
+            <div class="tagline">Your Literary Journey Begins</div>
+            <div class="description">
+                Join thousands of book lovers in our digital library. Discover new worlds, share your thoughts, and connect with fellow readers in our vibrant community.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

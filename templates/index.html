@@ -1,0 +1,599 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static "styles.css" %}">
+{% endblock styles %}
+{% block page %}
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        <div class="alert-icon">
+                            {% if message.tags == 'error' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            {% elif message.tags == 'success' %}
+                                <svg class="alert-svg" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {% endif %}
+                        </div>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+                <h1>Discover Your Next Great Read</h1>
+                <p>Explore thousands of books, connect with readers, and exchange your favorites in our vibrant community.</p>
+                <div class="hero-buttons">
+                    <a href="/browse" class="btn-primary">Browse Books</a>
+                    <a href="/exchange" class="btn-secondary">Join Community</a>
+                </div>
+                <div class="hero-search">
+                    <form method="GET" action="{% url 'search_books' %}">
+                    <input type="text" name="query" placeholder="Find your next read...">
+                    <button type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="{% static "carousel.png" %}" alt="Stack of books with reading glasses">
+            </div>
+        </div>
+    </section>
+
+    <!-- Browse by Genre -->
+    <section class="genres">
+        <div class="container">
+            <h2 class="section-title">Browse by Genre</h2>
+            <div class="genre-grid">
+                {% for genre in genres %}
+                <div class="genre-item" onclick="window.location.href = '/browse/{{genre.name}}'">
+                    <div class="genre-icon">
+                        <div class="genre-name">{{genre.name}}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
+    <!-- Recently Viewed -->
+    <section class="recently-viewed">
+        <div class="container">
+            <h2>Recently Added</h2>
+            <div class="books-grid">
+                {% for rb in r_books %}
+                <div class="book-card">
+                    <button onclick="toggleWishlist('{{ rb.slug }}', this)" class="wishlist-btn" data-slug="{{ rb.slug }}">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="book-actions">
+                        <button onclick="window.location.href = '/bookPage/{{rb.slug}}'" class="action-btn preview" title="Preview">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn cart" onclick="addToCart('{{rb.slug}}')" title="Add to Cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                        
+                    </div>
+                    <img onclick="window.location.href = '/bookPage/{{rb.slug}}'" src="{{rb.cover_image.url}}" alt="{{rb.title}}" class="book-cover">
+                    <h3 onclick="window.location.href = '/bookPage/{{rb.slug}}'" class="book-title">{{rb.title}}</h3>
+                    <p onclick="window.location.href = '/bookPage/{{rb.slug}}'" class="book-author">by {{rb.author}}</p>
+                    <div class="book-rating">
+                        {% if rb.rating == 5 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="far fa-star star filled"></i>
+                        </div>
+                        {% elif rb.rating >= 4 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 3 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 2 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 1 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star "></i>
+                            <i class="fas fa-star star "></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% endif %}
+                        <span class="rating-text">({{rb.rating}})</span>
+                    </div>
+                    <p onclick="window.location.href = '/bookPage/{{rb.slug}}'" class="book-description">{{rb.description | truncatechars:50 }}</p>
+                    <div class="book-footer">
+                        <span class="book-price">PKR. {{rb.price}}</span>
+                        <button class="add-to-cart" onclick="addToCart('{{rb.slug}}')">Add to Cart</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommendation-->
+     <section class="recently-viewed">
+        <div class="container">
+            <h2>Recommended Books</h2>
+            <div class="books-grid recomBooks">
+                {% for rb in books %}
+                <div class="book-card">
+                    <button onclick="toggleWishlist('{{ rb.slug }}', this)" class="wishlist-btn" data-slug="{{ rb.slug }}">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="book-actions">
+                        <button class="action-btn preview" title="Preview">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn cart" onclick="addToCart('{{rb.slug}}')" title="Add to Cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                        
+                    </div>
+                    <img src="{{rb.cover_image.url}}" alt="{{rb.title}}" class="book-cover">
+                    <h3 class="book-title">{{rb.title}}</h3>
+                    <p class="book-author">by {{rb.author}}</p>
+                    <div class="book-rating">
+                        {% if rb.rating == 5 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="far fa-star star filled"></i>
+                        </div>
+                        {% elif rb.rating >= 4 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 3 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 2 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 1 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star "></i>
+                            <i class="fas fa-star star "></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% endif %}
+                        <span class="rating-text">({{rb.rating}})</span>
+                    </div>
+                    <p class="book-description">{{rb.description | truncatechars:50 }}</p>
+                    <div class="book-footer">
+                        <span class="book-price">PKR. {{rb.price}}</span>
+                        <button class="add-to-cart" onclick="addToCart('{{rb.slug}}')">Add to Cart</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+    <!-- Trendings-->
+     <section class="recently-viewed">
+        <div class="container">
+            <h2>Trending Books</h2>
+            <div class="books-grid recomBooks">
+                {% for rb in trendBooks %}
+                <div class="book-card">
+                    <button onclick="toggleWishlist('{{ rb.slug }}', this)" class="wishlist-btn" data-slug="{{ rb.slug }}">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="book-actions">
+                        <button class="action-btn preview" title="Preview">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn cart" onclick="addToCart('{{rb.slug}}')" title="Add to Cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                        
+                    </div>
+                    <img src="{{rb.cover_image.url}}" alt="{{rb.title}}" class="book-cover">
+                    <h3 class="book-title">{{rb.title}}</h3>
+                    <p class="book-author">by {{rb.author}}</p>
+                    <div class="book-rating">
+                        {% if rb.rating == 5 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="far fa-star star filled"></i>
+                        </div>
+                        {% elif rb.rating >= 4 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 3 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 2 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% elif rb.rating >= 1 %}
+                        <div class="stars">
+                            <i class="fas fa-star star filled"></i>
+                            <i class="fas fa-star star "></i>
+                            <i class="fas fa-star star "></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="far fa-star star"></i>
+                        </div>
+                        {% endif %}
+                        <span class="rating-text">({{rb.rating}})</span>
+                    </div>
+                    <p class="book-description">{{rb.description | truncatechars:50 }}</p>
+                    <div class="book-footer">
+                        <span class="book-price">PKR. {{rb.price}}</span>
+                        <button class="add-to-cart" onclick="addToCart('{{rb.slug}}')">Add to Cart</button>
+                    </div>
+                </div>
+                {% endfor %}
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section class="community">
+        <div class="container">
+            <h2>Community Book Exchange</h2>
+            <p class="community-subtitle">Connect with fellow readers, exchange books, and discover hidden gems</p>
+            <div class="community-container">
+                <div class="exchange-content">
+                    <h3>Exchange Your Books</h3>
+                    <ul class="features-list">
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Trade books with other readers
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Buy used books at great prices
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Sell your collection easily
+                        </li>
+                        <li>
+                            <i class="fas fa-check"></i>
+                            Connect with local readers
+                        </li>
+                    </ul>
+                    <div class="exchange-buttons">
+                        <a href="/exchange" class="btn-primary">Start Exchanging</a>
+                        <a href="/exchange" class="btn-secondary">Learn More</a>
+                    </div>
+                </div>
+                <div class="community-image">
+                    <img src="{% static "community.png" %}" alt="People reading in library">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Review Modal -->
+    <div class="review-modal" id="reviewModal">
+        <div class="review-content">
+            <button class="close-modal" onclick="closeReviewModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 id="reviewBookTitle">Rate this book</h3>
+            <div class="review-stars">
+                <i class="fas fa-star review-star" data-rating="1"></i>
+                <i class="fas fa-star review-star" data-rating="2"></i>
+                <i class="fas fa-star review-star" data-rating="3"></i>
+                <i class="fas fa-star review-star" data-rating="4"></i>
+                <i class="fas fa-star review-star" data-rating="5"></i>
+            </div>
+            <button class="btn-primary" onclick="submitReview()">Submit Review</button>
+        </div>
+    </div>
+
+    <script>
+        //AIModel API setup
+        function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+        const slugs = [...new Set([...cart, ...wishlist])];
+        const csrftoken = getCookie('csrftoken'); 
+
+        fetch("/api/recommend/", {
+        method: "POST",
+        headers: { 
+            'X-CSRFToken': csrftoken,
+            "Content-Type": "application/json" },
+        body: JSON.stringify({ slugs })
+        })
+        .then(res => res.json())
+        .then(data => {
+            renderRecommendations(data); 
+        });
+
+        function renderRecommendations(data) {
+        const container = document.querySelector(".recomBooks");
+        container.innerHTML = "";
+
+        data.books.forEach(rb => {
+            container.innerHTML += `
+                <div class="book-card">
+                    <button onclick="toggleWishlist('${rb.slug}', this)" class="wishlist-btn" data-slug="${rb.slug}">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="book-actions">
+                        <button onclick="window.location.href = '/bookPage/${rb.slug}'" class="action-btn preview" title="Preview">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn cart" onclick="addToCart('${rb.slug}')" title="Add to Cart">
+                            <i class="fas fa-shopping-cart"></i>
+                        </button>
+                    </div>
+                    <img src="${rb.image || '/static/placeholder.png'}" alt="${rb.title}" class="book-cover">
+                    <h3 class="book-title" onclick="window.location.href = '/bookPage/${rb.slug}'">${rb.title}</h3>
+                    <p class="book-author">by ${rb.author}</p>
+                    <div class="book-rating">
+                        ${renderStars(rb.rating)}
+                        <span class="rating-text">(${rb.rating})</span>
+                    </div>
+                    <p class="book-description">${rb.description.substring(0, 50)}...</p>
+                    <div class="book-footer">
+                        <span class="book-price">PKR. ${rb.price || '0.00'}</span>
+                        <button class="add-to-cart" onclick="addToCart('${rb.slug}')">Add to Cart</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function renderStars(rating) {
+        let filled = Math.floor(rating);
+        let stars = "";
+
+        for (let i = 1; i <= 5; i++) {
+            stars += `<i class="${i <= filled ? 'fas' : 'far'} fa-star star ${i <= filled ? 'filled' : ''}"></i>`;
+        }
+
+        return `<div class="stars">${stars}</div>`;
+    }
+        //AIMODEL setup end
+
+       document.addEventListener("DOMContentLoaded", () => {
+        const username = "{{ request.user.username }}";
+        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+        // Set filled hearts for items in wishlist
+        document.querySelectorAll(".wishlist-btn").forEach(button => {
+            const slug = button.getAttribute("data-slug");
+            const icon = button.querySelector("i");
+
+            const isInWishlist = wishlist.some(item => item.slug === slug && item.username === username);
+            if (isInWishlist) {
+                button.classList.add("active");
+                icon.className = "fas fa-heart";
+            } else {
+                button.classList.remove("active");
+                icon.className = "far fa-heart";
+            }
+        });
+    });
+
+    function addToWishlist(slug) {
+        const username = "{{ request.user.username }}";
+        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        const exists = wishlist.some(item => item.slug === slug && item.username === username);
+        if (exists) return;
+        wishlist.push({ slug, username });
+        //alert(`Book ${slug} added to wishlist!`);
+        //console.log(JSON.parse(localStorage.getItem("wishlist")))
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    }
+
+    function deleteFromWishlist(slug) {
+        const username = "{{ request.user.username }}";
+        let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        wishlist = wishlist.filter(item => !(item.slug === slug && item.username === username));
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        //alert("Book removed from wishlist!");
+        //console.log(JSON.parse(localStorage.getItem("wishlist")))
+    }
+
+    function toggleWishlist(slug, button) {
+        console.log("Toggle clicked:", slug);
+        const icon = button.querySelector('i');
+        const isActive = button.classList.contains('active');
+
+        if (isActive) {
+            button.classList.remove('active');
+            icon.className = 'far fa-heart';
+            deleteFromWishlist(slug);
+        } else {
+            button.classList.add('active', 'burst');
+            icon.className = 'fas fa-heart';
+            setTimeout(() => {
+                button.classList.remove('burst');
+            }, 600);
+            addToWishlist(slug);
+        }
+    }
+
+        // Review modal functionality
+        function openReviewModal(bookTitle) {
+            const modal = document.getElementById('reviewModal');
+            const titleElement = document.getElementById('reviewBookTitle');
+            titleElement.textContent = `Rate "${bookTitle}"`;
+            modal.classList.add('active');
+        }
+
+        function closeReviewModal() {
+            const modal = document.getElementById('reviewModal');
+            modal.classList.remove('active');
+            // Reset stars
+            document.querySelectorAll('.review-star').forEach(star => {
+                star.classList.remove('active');
+            });
+        }
+
+        function submitReview() {
+            const activeStars = document.querySelectorAll('.review-star.active').length;
+            if (activeStars > 0) {
+                alert(`Thank you for your ${activeStars}-star review!`);
+                closeReviewModal();
+            } else {
+                alert('Please select a rating before submitting.');
+            }
+        }
+
+        // Review stars interaction
+        document.querySelectorAll('.review-star').forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.dataset.rating);
+                document.querySelectorAll('.review-star').forEach((s, index) => {
+                    if (index < rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const rating = parseInt(this.dataset.rating);
+                document.querySelectorAll('.review-star').forEach((s, index) => {
+                    if (index < rating) {
+                        s.style.color = '#fbbf24';
+                        s.style.transform = 'scale(1.1)';
+                    }
+                });
+            });
+
+            star.addEventListener('mouseleave', function() {
+                document.querySelectorAll('.review-star').forEach(s => {
+                    if (!s.classList.contains('active')) {
+                        s.style.color = '#e2e8f0';
+                        s.style.transform = 'scale(1)';
+                    }
+                });
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('reviewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReviewModal();
+            }
+        });
+
+        // Add to cart functionality
+        function addToCart(slug) {
+            const username = "{{ request.user.username }}";
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const index = cart.findIndex(item => item.slug === slug && item.username === username);
+
+            if (index !== -1) {
+                cart[index].quantity += 1;
+            } else {
+                cart.push({ slug, username, quantity: 1 });
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert("Book added to cart!");
+            // console.log(JSON.parse(localStorage.getItem("cart")))
+        }
+
+        // Genre browsing
+        function browseGenre(genre) {
+            alert(`Browsing ${genre} books...`);
+        }
+
+        // Search functionality
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    console.log(`Searching for: ${this.value}`);
+                }
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock page %}

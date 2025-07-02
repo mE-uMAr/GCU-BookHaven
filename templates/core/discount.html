@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .offers-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .offer-card {
+        background: white;
+        border-radius: 16px;
+        padding: 24px 32px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        margin-bottom: 24px;
+        border-left: 6px solid #f39c12;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .offer-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .offer-header {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .offer-description {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .avail-btn {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .avail-btn:hover {
+        background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        box-shadow: 0 6px 20px rgba(243, 156, 18, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: 600;
+        font-family: 'Playfair Display', serif;
+        color: #2c3e50;
+        margin-bottom: 40px;
+    }
+</style>
+{% endblock styles %}
+
+{% block page %}
+<div class="offers-container">
+    <h1 class="page-title">Exclusive Offers & Discounts</h1>
+
+    {% for offer in offers %}
+    <div class="offer-card">
+        <div class="offer-header">
+            {{ offer.discount_percent }}% OFF when you buy {{ offer.min_books }} or more books!
+        </div>
+        <div class="offer-description">
+            Auto-applied at checkout. No coupon needed. Boost your knowledge and save more!
+        </div>
+        <a href="/browse" class="avail-btn">Avail Offer</a>
+    </div>
+    {% empty %}
+    <p>No offers available at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock page %}
