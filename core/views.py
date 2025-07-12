@@ -227,7 +227,8 @@ def bookDetail(request, slug):
 
 def browseBooks(request):
     books = Book.objects.all()
-    return render(request, 'core/browse.html', {'books': books})
+    genre = Genre.objects.all()
+    return render(request, 'core/browse.html', {'books': books, 'genre': genre})
 
 def genrePage(request, name):
     genre = Genre.objects.get(name = name)
@@ -473,7 +474,7 @@ def verify_payment(request):
             'order': order,
             'order_id' : order.orderId,
             'string': "Thank you, Your order has been successfully placed and is now being processed.",
-            'link':"/orders/",
+            'link':"/orders",
             'price': order.total_price
         }
 

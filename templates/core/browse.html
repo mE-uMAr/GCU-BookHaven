@@ -809,37 +809,22 @@
                 <h2 class="sidebar-title">
                     <i class="fas fa-filter"></i> Filters
                 </h2>
-                <a href="#" class="clear-all" onclick="clearAllFilters()">
+                <a href="{% url "browse_books" %}" class="clear-all" onclick="clearAllFilters()">
                     <i class="fas fa-eraser"></i> Clear All
                 </a>
             </div>
 
-            {% comment %} <!-- Genre Filter -->
+            <!-- Genre Filter -->
             <div class="filter-section">
                 <h3 class="filter-title">
                     <i class="fas fa-tags"></i> Genre
                 </h3>
+                {% for g in genre %}
                 <div class="filter-option">
-                    <input type="checkbox" id="fiction" onchange="filterBooks()">
-                    <label for="fiction">Fiction (124)</label>
+                    <a style="text-decoration: none; color: black;" href="{% url "genrePage" g.name %}">{{ g.name }}</a>
                 </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="nonfiction" onchange="filterBooks()">
-                    <label for="nonfiction">Non-Fiction (89)</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="mystery" onchange="filterBooks()">
-                    <label for="mystery">Mystery (67)</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="romance" onchange="filterBooks()">
-                    <label for="romance">Romance (45)</label>
-                </div>
-                <div class="filter-option">
-                    <input type="checkbox" id="scifi" onchange="filterBooks()">
-                    <label for="scifi">Sci-Fi (38)</label>
-                </div>
-            </div> {% endcomment %}
+                {% endfor %}
+            </div>
 
             <!-- Price Range -->
             <div class="filter-section">
@@ -995,6 +980,7 @@
                     <div onclick="previewBook('{{book.slug}}')" class="book-details">
                         <h3 class="book-title">{{book.title}}</h3>
                         <p class="book-author">by {{book.author}}</p>
+                        <h6 style="color: black;" class="book-author">Genre: {{book.genre}}</h6>
                         <div class="book-rating">
                             {% if book.rating == 5.0 %}
                             <div class="star-rating">

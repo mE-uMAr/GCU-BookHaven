@@ -24,5 +24,6 @@ class StoreBook(models.Model):
     author = models.CharField(max_length=100)
     price = models.FloatField()
     available = models.BooleanField(default=True)
+    image = models.ImageField(upload_to='store_book_covers/' , blank=True, null=True)
     def __str__(self):
         return self.store.name + self.title
