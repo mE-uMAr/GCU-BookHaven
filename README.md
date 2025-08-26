@@ -48,7 +48,7 @@ BookHaven is a full‑stack web platform for academic content discovery and exch
 
 ### Setup
 ```bash
-git clone <your-repo-url> bookhaven
+git clone https://github.com/mE-uMAr/GCU-BookHaven
 cd bookhaven
 
 python -m venv .venv
