@@ -1,8 +1,7 @@
-# GCU-BookHaven – University Book Platform
-> Centralized bookstore, audiobook streaming, and student exchange portal built with Django.
+# GCU-BookHaven – Book Platform with unique exchange feature
 
 <p align="center">
-  <img src="static/icon.svg" alt="BookHaven Icon" width="96" height="96"/>
+  <img src="static/icon.svg" alt="BookHaven Icon" width="500" height="500"/>
 </p>
 
 <p align="center">
@@ -36,27 +35,16 @@ BookHaven is a full‑stack web platform for academic content discovery and exch
 - **Misc**: Pydub for audio processing, Celery (optional) for async tasks
 
 ## Architecture
-- Presentation: Bootstrap templates + JS
+- Presentation: HTML, CSS, JS
 - Application: Django views + services, RBAC, session management
-- Data: MySQL with normalized schema and FK integrity
+- Data: SQLite
 - Integrations: JazzCash (redirect + server‑side verification), Leaflet map
-- Media: protected image/audio delivery; static/media separation for prod
-
-
-## Screenshots (placeholders)
-Create a `docs/screens/` folder and drop PNG/JPGs. Reference them here:
-```
-![Home](docs/screens/home.png)
-![Book Details](docs/screens/book-details.png)
-![Cart](docs/screens/cart.png)
-![Admin](docs/screens/admin.png)
-```
+- Media: protected image/audio delivery; static/media separation for production
 
 ## Quickstart
 ### Prerequisites
 - Python 3.11+
 - MySQL 8 (or SQLite for local dev)
-- Node/npm only if you plan to bundle additional assets (optional)
 
 ### Setup
 ```bash
